@@ -1,0 +1,13 @@
+{
+  "name": "s3photo",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "deploy": "node scripts/deploy.mjs"
+  },
+  "devDependencies": {
+    "sass": "^1.105.0"
+  }
+}

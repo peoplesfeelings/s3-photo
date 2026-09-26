@@ -17,6 +17,7 @@ we're generating a simple web project. the idea is i want to be able to just upl
 - ideally everything is contained in the template file and few if any manual steps in aws console are needed to install and launch. 
 
 ## current plan of implementation:
+(original plan; see `_1_decisions.md` for what was decided, e.g. no invalidator lambda.)
 - point a domain at a cloudfront distro
 - accomplish auth using cloudfront features.
 - lambda for reading contents of bucket. set permissions as narrow.
