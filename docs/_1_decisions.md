@@ -3,7 +3,7 @@
 decisions made with the human user. supersedes conflicting items in `_0_project_info.md`.
 
 ## architecture
-- auth: http basic auth in a cloudfront function (viewer-request). credentials are template parameters, base64'd into the function code.
+- auth: http basic auth in a cloudfront function (viewer-request). credentials come from a secrets manager secret (json keys `user`, `password`; name is template parameter `AuthSecretName`, default `s3photo-auth`), created manually before deploy. resolved at deploy time via cloudformation dynamic references and base64'd with `btoa` in the function code. secret changes need a redeploy with a template change.
 - no invalidator lambda. the listing api is not cached (managed CachingDisabled), so new uploads show immediately. photos are cached at the edge; replacing a photo needs a new file name.
 - deploy in us-east-1 only (enforced by template `Rules`). the template creates the acm cert (dns validation) and route 53 alias records. requires a route 53 hosted zone in the same account.
 - one bucket. photos live in top-level folders. web files live under `_site/`, uploaded by `aws s3 sync`.
@@ -19,7 +19,7 @@ decisions made with the human user. supersedes conflicting items in `_0_project_
 - `src/list/index.mjs`: listing lambda (nodejs22.x, arm64). s3:ListBucket on the bucket only. uses the runtime's aws sdk v3; no package.json, no `sam build`.
 - `web/`: `index.html`, `app.js` (vanilla es module), `styles.scss` (sass, compiled to gitignored `styles.css`).
 - `scripts/deploy.mjs` (`npm run deploy`): compiles sass, runs `sam deploy` (guided if there is no `samconfig.toml`), syncs `web/` to `_site/`, then invalidates `/*`. it reads the stack name and region from `samconfig.toml`.
-- `samconfig.toml` is gitignored because it may contain the password.
+- `samconfig.toml` is gitignored.
 
 ## environment notes
 - node 22+ is required (the current sass package fails on node 18).

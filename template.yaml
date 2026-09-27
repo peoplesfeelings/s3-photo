@@ -9,12 +9,10 @@ Parameters:
   HostedZoneId:
     Type: AWS::Route53::HostedZone::Id
     Description: Route 53 hosted zone containing DomainName
-  AuthUser:
+  AuthSecretName:
     Type: String
-  AuthPassword:
-    Type: String
-    NoEcho: true
-    MinLength: 8
+    Default: s3photo-auth
+    Description: Secrets Manager secret with JSON keys "user" and "password"
 
 Rules:
   UsEast1:
@@ -133,12 +131,12 @@ Resources:
       FunctionConfig:
         Comment: basic auth + page rewrite
         Runtime: cloudfront-js-2.0
-      FunctionCode: !Sub
-        - |
+      FunctionCode: !Sub |
+          var expected = 'Basic ' + btoa('{{resolve:secretsmanager:${AuthSecretName}:SecretString:user}}:{{resolve:secretsmanager:${AuthSecretName}:SecretString:password}}');
           function handler(event) {
             var request = event.request;
             var auth = request.headers.authorization;
-            if (!auth || auth.value !== 'Basic ${Credentials}') {
+            if (!auth || auth.value !== expected) {
               return {
                 statusCode: 401,
                 statusDescription: 'Unauthorized',
@@ -148,8 +146,6 @@ Resources:
             if (request.uri.endsWith('/')) request.uri = '/_site/index.html';
             return request;
           }
-        - Credentials:
-            Fn::Base64: !Sub ${AuthUser}:${AuthPassword}
 
   Distribution:
     Type: AWS::CloudFront::Distribution

@@ -7,11 +7,18 @@ a simple project for being able to share your photos via aws hosting, catering t
 - a route 53 hosted zone for your domain, in the same aws account
 
 ## install / deploy
+create the login secret (once; password must not contain `'` or `\`):
+```
+aws secretsmanager create-secret --region us-east-1 --name s3photo-auth --secret-string '{"user":"<user>","password":"<password>"}'
+```
+then:
 ```
 npm install
 npm run deploy
 ```
-first run prompts for parameters (region must be `us-east-1`). later runs redeploy with saved settings (`samconfig.toml`, gitignored; may contain your password).
+first run prompts for parameters (region must be `us-east-1`). later runs redeploy with saved settings (`samconfig.toml`, gitignored).
+
+to change the login, update the secret, then redeploy with a template change (cloudformation doesn't detect secret changes).
 
 ## add photos
 ```
