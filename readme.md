@@ -5,6 +5,7 @@ a simple project for being able to share your photos via aws hosting, catering t
 ## prerequisites
 - node.js 22+, aws cli, aws sam cli, configured aws credentials
 - a route 53 hosted zone for your domain, in the same aws account
+- no A/AAAA records for the (sub)domain you'll use (delete any that exist); deployment creates them
 
 ## install / deploy
 create the login secret (once; password must not contain `'` or `\`):
