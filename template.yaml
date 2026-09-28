@@ -9,10 +9,6 @@ Parameters:
   HostedZoneId:
     Type: AWS::Route53::HostedZone::Id
     Description: Route 53 hosted zone containing DomainName
-  AuthSecretName:
-    Type: String
-    Default: s3photo-auth
-    Description: Secrets Manager secret with JSON keys "user" and "password"
 
 Rules:
   UsEast1:
@@ -122,6 +118,12 @@ Resources:
           QueryStringBehavior: whitelist
           QueryStrings: [folder]
 
+  # Holds key "auth": SHA-256 (hex) of the expected Authorization header. Set with `npm run set-login`.
+  AuthStore:
+    Type: AWS::CloudFront::KeyValueStore
+    Properties:
+      Name: !Sub ${AWS::StackName}-auth
+
   # Viewer-request: basic auth, and serve the single page for any path ending in "/".
   ViewerFunction:
     Type: AWS::CloudFront::Function
@@ -131,12 +133,22 @@ Resources:
       FunctionConfig:
         Comment: basic auth + page rewrite
         Runtime: cloudfront-js-2.0
+        KeyValueStoreAssociations:
+          - KeyValueStoreARN: !GetAtt AuthStore.Arn
       FunctionCode: !Sub |
-          var expected = 'Basic ' + btoa('{{resolve:secretsmanager:${AuthSecretName}:SecretString:user}}:{{resolve:secretsmanager:${AuthSecretName}:SecretString:password}}');
-          function handler(event) {
+          import cf from 'cloudfront';
+          import crypto from 'crypto';
+          var store = cf.kvs('${AuthStore.Id}');
+          async function handler(event) {
             var request = event.request;
             var auth = request.headers.authorization;
-            if (!auth || auth.value !== expected) {
+            var expected;
+            try {
+              expected = await store.get('auth');
+            } catch (e) {
+              expected = null;
+            }
+            if (!auth || !expected || crypto.createHash('sha256').update(auth.value).digest('hex') !== expected) {
               return {
                 statusCode: 401,
                 statusDescription: 'Unauthorized',
@@ -211,3 +223,5 @@ Outputs:
     Value: !Ref Distribution
   Url:
     Value: !Sub https://${DomainName}/
+  AuthStoreArn:
+    Value: !GetAtt AuthStore.Arn

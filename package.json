@@ -5,7 +5,8 @@
     "node": ">=22"
   },
   "scripts": {
-    "deploy": "node scripts/deploy.mjs"
+    "deploy": "node scripts/deploy.mjs",
+    "set-login": "node scripts/set-login.mjs"
   },
   "devDependencies": {
     "sass": "^1.105.0"

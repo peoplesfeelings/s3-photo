@@ -8,18 +8,17 @@ a simple project for being able to share your photos via aws hosting, catering t
 - no A/AAAA records for the (sub)domain you'll use (delete any that exist); deployment creates them
 
 ## install / deploy
-create the login secret (once; password must not contain `'` or `\`):
-```
-aws secretsmanager create-secret --region us-east-1 --name s3photo-auth --secret-string '{"user":"<user>","password":"<password>"}'
-```
-then:
 ```
 npm install
 npm run deploy
 ```
 first run prompts for parameters (region must be `us-east-1`). later runs redeploy with saved settings (`samconfig.toml`, gitignored).
 
-to change the login, update the secret, then redeploy with a template change (cloudformation doesn't detect secret changes).
+## set / change the login
+```
+npm run set-login -- <user> <password>
+```
+no redeploy needed. all requests are rejected until this is set.
 
 ## add photos
 ```
