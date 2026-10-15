@@ -12,9 +12,9 @@ a simple project for being able to share your photos via aws hosting, catering t
 npm install
 npm run deploy
 ```
-first run prompts for parameters (region must be `us-east-1`). later runs redeploy with saved settings (`samconfig.toml`, gitignored).
+first run prompts for parameters (region must be `us-east-1`). answer **Y** to "Save arguments to configuration file". later runs redeploy with saved settings (`samconfig.toml`, gitignored).
 
-## set / change the login
+### set / change the login
 ```
 npm run set-login -- <user> <password>
 ```

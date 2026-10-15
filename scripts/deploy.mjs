@@ -5,9 +5,9 @@ import { CONFIG, run, stackOutputs } from './stack.mjs';
 run('npx sass --no-source-map web/styles.scss web/styles.css');
 
 if (existsSync(CONFIG)) {
-  run('sam deploy');
+  run('sam deploy --no-fail-on-empty-changeset');
 } else {
-  run('sam deploy --guided --stack-name s3photo --region us-east-1 --capabilities CAPABILITY_IAM');
+  run('sam deploy --guided --no-fail-on-empty-changeset --stack-name s3photo --region us-east-1 --capabilities CAPABILITY_IAM');
 }
 
 const output = stackOutputs();
