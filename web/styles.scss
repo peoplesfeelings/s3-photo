@@ -43,7 +43,8 @@ a {
 
 .back,
 .prev,
-.next {
+.next,
+.fullscreen {
   position: absolute;
   padding: 1rem;
   border: 0;
@@ -61,6 +62,11 @@ a {
   left: 0;
 }
 
+.fullscreen {
+  bottom: 0;
+  right: 0;
+}
+
 .prev,
 .next {
   top: 50%;
@@ -70,7 +76,8 @@ a {
 .slideshow.idle {
   .back,
   .prev,
-  .next {
+  .next,
+  .fullscreen {
     opacity: 0;
     pointer-events: none;
   }

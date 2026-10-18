@@ -40,6 +40,17 @@ async function showSlideshow(folder) {
   const next = el('button', { className: 'next', textContent: '›', onclick: () => show(index + 1) });
 
   const container = el('div', { className: 'slideshow' }, [img, back, prev, next]);
+
+  const fullscreen = el('button', {
+    className: 'fullscreen',
+    textContent: '⛶',
+    onclick: () => (document.fullscreenElement ? document.exitFullscreen() : container.requestFullscreen()),
+  });
+  document.addEventListener('fullscreenchange', () => {
+    fullscreen.textContent = document.fullscreenElement ? '⤬' : '⛶';
+  });
+  container.append(fullscreen);
+
   let idleTimer;
   const resetIdle = () => {
     container.classList.remove('idle');
