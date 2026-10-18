@@ -27,7 +27,5 @@ decisions made with the human user. supersedes conflicting items in `_0_project_
 - node 22+ is required (the current sass package fails on node 18).
 - on this dev machine, SAM CLI is at `C:\Program Files\Amazon\AWSSAMCLI\bin\sam.cmd`. the bash tool may need the full path.
 
-## unverified
-- not yet deployed. `sam validate --lint` passes.
-- cloudfront function es `import` of both `cloudfront` and `crypto`, and `cf.kvs(<id>)`.
-- both `lambda:InvokeFunctionUrl` and `lambda:InvokeFunction` permissions are granted to cloudfront, on the belief that aws now requires both for function urls.
+## status
+- deployed and working in prod: auth, the listing api (lambda function url via oac), and the slideshow ui are all confirmed.
