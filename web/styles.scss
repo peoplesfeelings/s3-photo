@@ -52,6 +52,8 @@ a {
   font-size: 1.5rem;
   text-decoration: none;
   cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.5s;
 }
 
 .back {
@@ -63,6 +65,15 @@ a {
 .next {
   top: 50%;
   transform: translateY(-50%);
+}
+
+.slideshow.idle {
+  .back,
+  .prev,
+  .next {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .prev {
